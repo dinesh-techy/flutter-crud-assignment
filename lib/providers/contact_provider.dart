@@ -8,34 +8,51 @@ class ContactProvider with ChangeNotifier {
   List<Contact> get contacts => _contacts;
 
   Future<void> fetchContacts() async {
-    final query = QueryBuilder(ParseObject('Contact'));
-    final response = await query.query();
-    if (response.success && response.results != null) {
-      _contacts = response.results!.map((e) => Contact.fromParse(e)).toList();
-      notifyListeners();
-    }
+  final currentUser = await ParseUser.currentUser() as ParseUser?;
+  if (currentUser == null) return;
+
+  final query = QueryBuilder(ParseObject('Contact'));
+  final response = await query.query();
+
+  if (response.success && response.results != null) {
+    _contacts = response.results!.map((e) => Contact.fromParse(e)).toList();
+    notifyListeners();
   }
+}
 
   Future<void> addContact(Contact contact) async {
-    final parseObj = contact.toParse();
-    final response = await parseObj.save();
-    if (response.success) {
-      await fetchContacts();
-    }
+  final currentUser = await ParseUser.currentUser() as ParseUser?;
+  if (currentUser == null) return;
+
+  final parseObj = contact.toParse()
+    ..setACL(ParseACL(owner: currentUser)); // ✅ Restrict access to current user
+
+  final response = await parseObj.save();
+  if (response.success) {
+    await fetchContacts();
+  }
+}
+  
+  Future<void> deleteContact(int index) async {
+  final contact = _contacts[index];
+  final parseObj = ParseObject('Contact')..objectId = contact.objectId;
+  final deleteResponse = await parseObj.delete();
+
+  if (deleteResponse.success) {
+    await fetchContacts();
+  }
   }
 
   Future<void> updateContact(int index, Contact contact) async {
-    final response = await contact.toParse().save();
-    if (response.success) {
-      await fetchContacts();
-    }
-  }
+    final currentUser = await ParseUser.currentUser() as ParseUser?;
+    if (currentUser == null) return;
 
-  Future<void> deleteContact(int index) async {
-    final contact = _contacts[index];
-    final response = await ParseObject('Contact')..objectId = contact.objectId;
-    final deleteResponse = await response.delete();
-    if (deleteResponse.success) {
+    final parseObj = contact.toParse()
+      ..objectId = contact.objectId // ✅ Ensure Parse knows it's an existing object
+      ..setACL(ParseACL(owner: currentUser)); // Optional: maintain ACL
+
+    final response = await parseObj.save();
+    if (response.success) {
       await fetchContacts();
     }
   }

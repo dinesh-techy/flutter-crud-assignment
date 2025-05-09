@@ -74,18 +74,25 @@ class _ContactFormState extends State<ContactForm> {
         ElevatedButton(
           child: Text(isEditing ? 'Update' : 'Add'),
           onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              _formKey.currentState!.save();
-              final contact = Contact(name: name, age: age, mobile: mobile);
-              final provider = Provider.of<ContactProvider>(context, listen: false);
-              if (isEditing) {
-                provider.updateContact(widget.index!, contact);
-              } else {
-                provider.addContact(contact);
-              }
-              Navigator.of(context).pop();
+          if (_formKey.currentState!.validate()) {
+            _formKey.currentState!.save();
+
+            final contact = Contact(
+              name: name,
+              age: age,
+              mobile: mobile,
+              objectId: isEditing ? widget.contact!.objectId : null,
+            );
+
+            final provider = Provider.of<ContactProvider>(context, listen: false);
+            if (isEditing) {
+              provider.updateContact(widget.index!, contact);
+            } else {
+              provider.addContact(contact);
             }
-          },
+            Navigator.of(context).pop();
+          }
+        },
         ),
       ],
     );
