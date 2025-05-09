@@ -3,8 +3,21 @@ import 'package:provider/provider.dart';
 import '../providers/contact_provider.dart';
 import '../widgets/contact_form.dart';
 
-class ContactHomePage extends StatelessWidget {
+class ContactHomePage extends StatefulWidget {
   const ContactHomePage({super.key});
+
+  @override
+  State<ContactHomePage> createState() => _ContactHomePageState();
+}
+
+class _ContactHomePageState extends State<ContactHomePage> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      Provider.of<ContactProvider>(context, listen: false).fetchContacts();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
