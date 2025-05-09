@@ -10,6 +10,8 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   provider: ^6.0.5
+  parse_server_sdk_flutter: ^7.0.0
+
 
 dev_dependencies:
   flutter_test:
