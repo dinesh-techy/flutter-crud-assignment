@@ -28,6 +28,7 @@ class _SignupScreenState extends State<SignupScreen> {
         MaterialPageRoute(builder: (_) => const ContactHomePage()),
       );
     } else {
+      print('Signup failed: ${response.error?.message}'); // <- Add this line
       _showError(response.error!.message);
     }
   }
