@@ -13,12 +13,11 @@ class Contact {
     required this.mobile,
   });
 
-  // ✅ Convert Contact to ParseObject
   ParseObject toParse() {
     final obj = ParseObject('Contact');
 
     if (objectId != null) {
-      obj.objectId = objectId; // Needed for update
+      obj.objectId = objectId;
     }
 
     obj
@@ -29,7 +28,6 @@ class Contact {
     return obj;
   }
 
-  // ✅ Convert ParseObject to Contact
   factory Contact.fromParse(ParseObject obj) {
     return Contact(
       objectId: obj.objectId,

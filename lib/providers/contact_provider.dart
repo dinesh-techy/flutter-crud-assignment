@@ -25,7 +25,7 @@ class ContactProvider with ChangeNotifier {
   if (currentUser == null) return;
 
   final parseObj = contact.toParse()
-    ..setACL(ParseACL(owner: currentUser)); // ✅ Restrict access to current user
+    ..setACL(ParseACL(owner: currentUser));
 
   final response = await parseObj.save();
   if (response.success) {
@@ -48,8 +48,8 @@ class ContactProvider with ChangeNotifier {
     if (currentUser == null) return;
 
     final parseObj = contact.toParse()
-      ..objectId = contact.objectId // ✅ Ensure Parse knows it's an existing object
-      ..setACL(ParseACL(owner: currentUser)); // Optional: maintain ACL
+      ..objectId = contact.objectId 
+      ..setACL(ParseACL(owner: currentUser));
 
     final response = await parseObj.save();
     if (response.success) {
